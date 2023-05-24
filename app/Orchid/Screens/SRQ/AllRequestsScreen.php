@@ -1,23 +1,22 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Orchid\Screens\SRQ;
 
-namespace App\Orchid\Screens;
-
-use Illuminate\Support\Env;
+use DrxClient\DrxClient;
 use Orchid\Screen\Screen;
-use Orchid\Support\Facades\Layout;
 
-class PlatformScreen extends Screen
+class AllRequestsScreen extends Screen
 {
+    public $drxType = "AbstractRequests";
     /**
      * Fetch data to be displayed on the screen.
      *
      * @return array
      */
+
     public function query(): iterable
     {
-        $url = env();
+        $url = "http://192.168.1.241/Integration/odata/";
         $login = 'lygun';
         $password = '31185';
 
@@ -34,18 +33,12 @@ class PlatformScreen extends Screen
 
     /**
      * The name of the screen displayed in the header.
+     *
+     * @return string|null
      */
     public function name(): ?string
     {
-        return 'Get Started';
-    }
-
-    /**
-     * Display header description.
-     */
-    public function description(): ?string
-    {
-        return 'Welcome to your Orchid application.';
+        return 'AllReqeustsScreen';
     }
 
     /**
@@ -61,13 +54,10 @@ class PlatformScreen extends Screen
     /**
      * The screen's layout elements.
      *
-     * @return \Orchid\Screen\Layout[]
+     * @return \Orchid\Screen\Layout[]|string[]
      */
     public function layout(): iterable
     {
-        return [
-            Layout::view('platform::partials.update-assets'),
-            Layout::view('platform::partials.welcome'),
-        ];
+        return [];
     }
 }

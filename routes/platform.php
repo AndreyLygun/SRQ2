@@ -31,6 +31,10 @@ use Tabuna\Breadcrumbs\Trail;
 */
 
 // Main
+
+Route::screen("/admin/allrequests", PlatformScreen::class)
+    ->name('platform.allrequests');
+
 Route::screen('/main', PlatformScreen::class)
     ->name('platform.main');
 

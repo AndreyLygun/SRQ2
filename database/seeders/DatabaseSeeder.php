@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\DrxAccount;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +20,7 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "AdminCompany"], ["drx_login" => "lygun", "drx_password" => "31185"]);
+        User::where(["name" => "lygun"])->update(["drx_account_id" => $DrxAccount->id]);
     }
 }
