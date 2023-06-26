@@ -9,7 +9,8 @@ use App\Orchid\Layouts\User\UserFiltersLayout;
 use App\Orchid\Layouts\User\UserListLayout;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Orchid\Platform\Models\User;
+//use Orchid\Platform\Models\User;
+use App\Models\User;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -25,7 +26,7 @@ class UserListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'users' => User::with('roles')
+            'users' => User::with('roles','DrxAccount')
                 ->filters(UserFiltersLayout::class)
                 ->defaultSort('id', 'desc')
                 ->paginate(),
@@ -76,6 +77,7 @@ class UserListScreen extends Screen
      */
     public function layout(): iterable
     {
+//        dd($this->query());
         return [
             UserFiltersLayout::class,
             UserListLayout::class,

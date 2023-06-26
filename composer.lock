@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8aba400db142507238163e7ef4426add",
+    "content-hash": "0f67d1636b4a64172e1cf51b3f9e08e3",
     "packages": [
         {
             "name": "brick/math",
@@ -976,16 +976,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.11.0",
+            "version": "v10.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "21a5b6d9b669f32c10cc8ba776511b5f62599fea"
+                "reference": "9e6dcff23ab1d4b522bef56074c31625cf077576"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/21a5b6d9b669f32c10cc8ba776511b5f62599fea",
-                "reference": "21a5b6d9b669f32c10cc8ba776511b5f62599fea",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/9e6dcff23ab1d4b522bef56074c31625cf077576",
+                "reference": "9e6dcff23ab1d4b522bef56074c31625cf077576",
                 "shasum": ""
             },
             "require": {
@@ -1172,7 +1172,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-05-16T13:59:23+00:00"
+            "time": "2023-05-23T18:04:16+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -1242,16 +1242,16 @@
         },
         {
             "name": "laravel/scout",
-            "version": "v10.2.1",
+            "version": "v10.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/scout.git",
-                "reference": "535dcb6e7cac7955759942272ccf149c9818ee60"
+                "reference": "0ec3c900bd26f0ab69105bf5b72beef3852d78a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/scout/zipball/535dcb6e7cac7955759942272ccf149c9818ee60",
-                "reference": "535dcb6e7cac7955759942272ccf149c9818ee60",
+                "url": "https://api.github.com/repos/laravel/scout/zipball/0ec3c900bd26f0ab69105bf5b72beef3852d78a8",
+                "reference": "0ec3c900bd26f0ab69105bf5b72beef3852d78a8",
                 "shasum": ""
             },
             "require": {
@@ -1313,7 +1313,7 @@
                 "issues": "https://github.com/laravel/scout/issues",
                 "source": "https://github.com/laravel/scout"
             },
-            "time": "2023-05-10T10:25:08+00:00"
+            "time": "2023-05-24T13:30:35+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -3232,6 +3232,59 @@
                 }
             ],
             "time": "2023-04-15T23:01:58+00:00"
+        },
+        {
+            "name": "saintsystems/odata-client",
+            "version": "dev-l10-compatibility",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-shift/odata-client-php.git",
+                "reference": "19ae609a4b6c81e3fa71c28c11025de0588141d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-shift/odata-client-php/zipball/19ae609a4b6c81e3fa71c28c11025de0588141d5",
+                "reference": "19ae609a4b6c81e3fa71c28c11025de0588141d5",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "illuminate/support": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0|^10.0",
+                "nesbot/carbon": "^2.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Core/helpers.php"
+                ],
+                "psr-4": {
+                    "SaintSystems\\OData\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saint Systems",
+                    "email": "contact@saintsystems.com"
+                }
+            ],
+            "description": "Saint Systems OData Client for PHP",
+            "homepage": "https://github.com/saintsystems/odata-client-php",
+            "keywords": [
+                "odata",
+                "php",
+                "rest"
+            ],
+            "support": {
+                "source": "https://github.com/laravel-shift/odata-client-php/tree/l10-compatibility"
+            },
+            "time": "2023-02-03T00:25:30+00:00"
         },
         {
             "name": "symfony/console",
@@ -8292,11 +8345,13 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "saintsystems/odata-client": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

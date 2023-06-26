@@ -10,7 +10,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "orchid/platform": "^14.0"
+        "orchid/platform": "^14.0",
+        "saintsystems/odata-client": "dev-l10-compatibility"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -63,5 +64,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laravel-shift/odata-client-php.git"
+        }
+    ]
 }

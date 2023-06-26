@@ -17,19 +17,7 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        $url = env();
-        $login = 'lygun';
-        $password = '31185';
-
-        $drxClient = new DrxClient($url, $login, $password);
-        $response = $drxClient->from('IBaseRequests')->expand("BusinessUnit, Author")->get();
-
-        $requests = [];
-        foreach($response as $item) {
-            $requests[] = $item["properties"];
-        }
-//        dd($requests);
-        return ["requests" => $requests];
+        return [];
     }
 
     /**

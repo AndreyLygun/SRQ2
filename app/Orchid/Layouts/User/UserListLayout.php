@@ -49,6 +49,10 @@ class UserListLayout extends Table
                 ->sort()
                 ->render(fn (User $user) => $user->updated_at->toDateTimeString()),
 
+            TD::make('drx_account_id', __('Арендатор'))
+                ->sort()
+                ->render(fn (User $user) => $user->DrxAccount->name),
+
             TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')

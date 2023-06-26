@@ -67,4 +67,8 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function DrxAccount() {
+        return $this->belongsTo(DrxAccount::class);
+    }
 }

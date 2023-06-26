@@ -35,7 +35,7 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
             Menu::make("Все заявки")
-            ->route('platform.allrequests'),
+            ->route('drx.entitieslist'),
 
             Menu::make(__('Users'))
                 ->icon('bs.people')

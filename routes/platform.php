@@ -15,6 +15,7 @@ use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
+use App\Orchid\Screens\DRX\EntitiesListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -32,8 +33,12 @@ use Tabuna\Breadcrumbs\Trail;
 
 // Main
 
-Route::screen("/admin/allrequests", PlatformScreen::class)
-    ->name('platform.allrequests');
+Route::screen("/alldocuments", EntitiesListScreen::class)
+    ->name('drx.entitieslist');
+
+Route::screen("/Sungero.IntegrationService.Models.Generated.Contracts.IContractDto", \App\Orchid\Screens\DRX\IContractScreen::class)
+    ->name('drx.IContractDto');
+
 
 Route::screen('/main', PlatformScreen::class)
     ->name('platform.main');
