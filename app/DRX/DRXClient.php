@@ -15,8 +15,8 @@ class PostProcessor implements IProcessor {
         foreach($response as $item) {
             $entity = $item["properties"];
             if (isset($entity["@odata.type"])) {
-                $s = $entity["@odata.type"];
-                $entity["@odata.type"] = substr($s, 1);
+                $chuncks = explode(".", $entity["@odata.type"]);
+                $entity["@odata.type"] = end($chuncks);
             }
             $result[] = $entity;
         }

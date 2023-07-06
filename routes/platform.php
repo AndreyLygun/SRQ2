@@ -33,11 +33,19 @@ use Tabuna\Breadcrumbs\Trail;
 
 // Main
 
-Route::screen("/alldocuments", EntitiesListScreen::class)
+Route::screen("/srq/{doctype}", \App\Orchid\Screens\DRX\IContractScreen::class)
+    ->name('drx.IContractDto');
+
+
+
+Route::screen("/sequrityrequests", EntitiesListScreen::class)
     ->name('drx.entitieslist');
 
-Route::screen("/Sungero.IntegrationService.Models.Generated.Contracts.IContractDto", \App\Orchid\Screens\DRX\IContractScreen::class)
+Route::screen("/IContractDto", \App\Orchid\Screens\DRX\IContractScreen::class)
     ->name('drx.IContractDto');
+
+
+
 
 
 Route::screen('/main', PlatformScreen::class)

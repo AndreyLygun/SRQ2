@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\DRX",
+    "\\app\\Orchid",
+    "\\app\\Orchid\\Screens",
+    "\\app\\Orchid\\Screens\\DRX",
+    "\\config",
+    "\\routes"
+  ],
+  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\EntitiesListScreen.php",
+  "PreviewInSolutionExplorer": false
+}

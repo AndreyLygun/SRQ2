@@ -21,12 +21,23 @@ class EntitiesListScreen extends Screen
     // Тип документа в сервисе интеграции, например IOfficialDocuments
     public $DRXEntity = "IOfficialDocuments";
 
+    //Список ссылочных свойств (через запятую), которые должны быть получены в запросе
+    public function ExpandFields(): string
+    {
+        return "DocumentKind, Author";
+    }
+
     public function query(): iterable
     {
         $odata = new DRXClient();
         $total = $odata->from($this->DRXEntity)->count();
         $p = $this->pagination($total);
-        $entities = $odata->from($this->DRXEntity)->take($p["per_page"])->skip(($p["page"]-1)*$p["per_page"])->get();
+        $entities = $odata->from($this->DRXEntity)
+            ->take($p["per_page"])
+            ->skip(($p["page"]-1)*$p["per_page"])
+            ->expand($this->ExpandFields())
+            ->get();
+//        dd($entities);
         return [
                 "entities" => $entities,
                 "pagination" => $p
@@ -56,7 +67,7 @@ class EntitiesListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Все документы';
+        return 'Все заявки';
     }
 
     /**
@@ -80,7 +91,12 @@ class EntitiesListScreen extends Screen
         return [
             Layout::table("entities", [
                 TD::make("Id", "Id")->render(fn($item)=>$item["Id"]),
-                TD::make("Name", "Название")->render(fn($item)=>"<a href='/admin/{$item["@odata.type"]}?id={$item["Id"]}'>{$item["Name"]}</a>")->sort(),
+                TD::make("DocumentKind", "Вид заявки")
+                    ->render(fn($item)=>"<a href='/admin/{$item["@odata.type"]}?id={$item["Id"]}'>{$item["DocumentKind"]["Name"]}</a>")
+                    ->sort()->filter(),
+                TD::make("Subject", "Содержание")
+                    ->render(fn($item)=>"<a href='/admin/{$item["@odata.type"]}?id={$item["Id"]}'>{$item["Subject"]}</a>")
+                    ->sort(),
                 TD::make("DocumentDate", "Дата")->render(fn($item)=>$item["DocumentDate"])->sort()
             ]),
             Layout::view("Pagination", ["pagination" => $this->query("pagination")])

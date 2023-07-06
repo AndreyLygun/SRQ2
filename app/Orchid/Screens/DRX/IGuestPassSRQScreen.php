@@ -21,7 +21,7 @@ class IContractScreen extends Screen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $DRXEntity = "IContracts";
+    public $DRXEntity = "IGuestPassSRQ";
 
     public function ExpandFields() {
         return "Counterparty";
