@@ -26,22 +26,11 @@ class PostProcessor implements IProcessor {
 
 class DRXClient extends ODataClient
 {
-    use Filterable;
 
-    protected $allowedSorts = [
-        'id',
-        'Name',
-        'DocumentDate',
-    ];
-
-
-    protected string $url;
-    protected string $login;
-    protected string $password;
 	public function __construct() {
         $url = env("DIRECTUM_INTEGRATION_URL");
-        $login = Auth()->user()->DrxAccount->drx_login;
-        $password = Auth()->user()->DrxAccount->drx_password;
+        $login = Auth()->user()->DrxAccount->DRX_Login;
+        $password = Auth()->user()->DrxAccount->DRX_Password;
         parent::__construct($url, function($request) use ($login, $password) {
             $request->headers['Authorization'] = 'Basic '.base64_encode($login.':'.$password);
         });

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('drx_accounts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->string('drx_login');
-            $table->string('drx_password');
+            $table->string('Name')->comment("Название компании");
+            $table->string('DRX_Login')->comment("Логин в DRX")->unique();
+            $table->string('DRX_Password')->comment("Пароль в DRX");
+            $table->longText('emails')->comment("Список допустимых e-mail пользователей");
         });
     }
 

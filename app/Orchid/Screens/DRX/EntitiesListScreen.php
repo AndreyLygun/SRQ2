@@ -2,10 +2,9 @@
 
 namespace App\Orchid\Screens\DRX;
 
-use http\Client\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Orchid\Screen\Screen;
+use Orchid\Screen\Actions\DropDown;
+use Orchid\Screen\Actions\Link;
 use App\DRX\DRXClient;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
@@ -19,12 +18,12 @@ class EntitiesListScreen extends Screen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $DRXEntity = "IOfficialDocuments";
+    public $DRXEntity = "IServiceRequestsSecuritySRQs";
 
     //Список ссылочных свойств (через запятую), которые должны быть получены в запросе
     public function ExpandFields(): string
     {
-        return "DocumentKind, Author";
+        return "DocumentKind,Author";
     }
 
     public function query(): iterable
@@ -77,7 +76,13 @@ class EntitiesListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            DropDown::make("Создать заявку...")->
+            List([
+                Link::make("...на разовый пропуск")->route("drx.GuestPassSRQDto"),
+                Link::make("...на разовый автопропуск")->route("drx.AutoPassSRQDto")
+            ])
+         ];
     }
 
     /**
@@ -92,10 +97,10 @@ class EntitiesListScreen extends Screen
             Layout::table("entities", [
                 TD::make("Id", "Id")->render(fn($item)=>$item["Id"]),
                 TD::make("DocumentKind", "Вид заявки")
-                    ->render(fn($item)=>"<a href='/admin/{$item["@odata.type"]}?id={$item["Id"]}'>{$item["DocumentKind"]["Name"]}</a>")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["DocumentKind"]["Name"]}</a>")
                     ->sort()->filter(),
                 TD::make("Subject", "Содержание")
-                    ->render(fn($item)=>"<a href='/admin/{$item["@odata.type"]}?id={$item["Id"]}'>{$item["Subject"]}</a>")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Subject"]}</a>")
                     ->sort(),
                 TD::make("DocumentDate", "Дата")->render(fn($item)=>$item["DocumentDate"])->sort()
             ]),

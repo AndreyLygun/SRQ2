@@ -3,12 +3,14 @@
     "",
     "\\app",
     "\\app\\DRX",
+    "\\app\\Models",
     "\\app\\Orchid",
     "\\app\\Orchid\\Screens",
     "\\app\\Orchid\\Screens\\DRX",
-    "\\config",
+    "\\database",
+    "\\database\\migrations",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\EntitiesListScreen.php",
+  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\GuestPassSRQScreen.php",
   "PreviewInSolutionExplorer": false
 }

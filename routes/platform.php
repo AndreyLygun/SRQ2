@@ -16,7 +16,10 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\DRX\EntitiesListScreen;
+use App\Orchid\Screens\DRX\GuestPassSRQScreen;
+use App\Orchid\Screens\DRX\AutoPassSRQScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -24,6 +27,7 @@ use Tabuna\Breadcrumbs\Trail;
 |--------------------------------------------------------------------------
 | Dashboard Routes
 |--------------------------------------------------------------------------
+|
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
@@ -33,19 +37,15 @@ use Tabuna\Breadcrumbs\Trail;
 
 // Main
 
-Route::screen("/srq/{doctype}", \App\Orchid\Screens\DRX\IContractScreen::class)
-    ->name('drx.IContractDto');
+Route::screen("/srq/list", EntitiesListScreen::class)
+    ->name('drx.srqlist');
 
 
+Route::screen("/srq/IGuestPassSRQDto/{id?}", GuestPassSRQScreen::class)
+    ->name('drx.GuestPassSRQDto');
 
-Route::screen("/sequrityrequests", EntitiesListScreen::class)
-    ->name('drx.entitieslist');
-
-Route::screen("/IContractDto", \App\Orchid\Screens\DRX\IContractScreen::class)
-    ->name('drx.IContractDto');
-
-
-
+Route::screen("/srq/IAutoPassSRQDto/{id?}", AutoPassSRQScreen::class)
+    ->name('drx.AutoPassSRQDto');
 
 
 Route::screen('/main', PlatformScreen::class)
