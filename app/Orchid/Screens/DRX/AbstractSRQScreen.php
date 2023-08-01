@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\DRX\DRXClient;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Label;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
@@ -88,26 +89,23 @@ class AbstractSRQScreen extends Screen
     }
 
     public function Save() {
-       $odata = new DRXClient();
-       if (isset($this->entity['Id'])) {
-           $odata->patch("{$this->EntityType}({$this->entity['Id']})", $this->entity);
-       } else {
-           unset($this->entity["Id"]);
-           unset($this->entity["ExternalAccount"]);
-           //dd($this->entity);
-           try {
-               $entity = $odata->post("{$this->EntityType}", $this->entity);
-           }
-           catch(ClientException $e) {
-               dd($e);
-           }
-
-       }
-       Toast::info('Что-то сохранилось');
+        $odata = new DRXClient();
+        if ($this->entity['Id'] != null) {
+            $odata->patch("{$this->EntityType}({$this->entity['Id']})", $this->entity);
+        } else {
+            try {
+                unset($this->entity['Id']);
+                $entity = $odata->post("{$this->EntityType}", $this->entity);
+            }
+            catch(ClientException $e) {
+                dd($e);
+            }
+        }
+        Toast::info('Что-то сохранилось');
     }
 
     public function Submit() {
-       Toast::info("Заглушка отправки на согласование.");
+        Toast::info("Заглушка отправки на согласование.");
     }
 
     /**
@@ -117,13 +115,23 @@ class AbstractSRQScreen extends Screen
      */
     public function layout(): iterable
     {
-     //   dd($this->query()["entity"]);
+        //dd($this->query()["entity"]);
         return [
+            Layout::columns([
+                Layout::rows([
+                    Input::make("v1")->title("Что-то 1"),
+                    Input::make("v1")->title("Что-то 2"),
+                ])->,
+                Layout::rows([
+                    Input::make("v1")->title("Что-то 3"),
+                    Input::make("v1")->title("Что-то 4"),
+                ])
+            ]),
             Layout::rows([
-                Input::make("entity.Id")->title("Заявка №")->readonly()->horizontal(),
-                Input::make("entity.ExternalAccount.Name")->title("Название компании")->readonly()->horizontal(),
-                Input::make("entity.ResponsibleName")->title("Автор заявки")->readonly()->horizontal()
-            ])
+                Input::make("entity.Id")->type("hidden"),
+                Label::make("entity.ExternalAccount.Name")->title("Название компании")->horizontal(),
+                Label::make("entity.ResponsibleName")->title("Автор заявки")->readonly()->horizontal()
+             ])
         ];
     }
 }

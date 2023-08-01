@@ -21,7 +21,7 @@ class AutoPassSRQScreen extends SecuritySRQScreen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IServiceRequestsGuestPassSRQs";
+    public $EntityType = "IServiceRequestsAutoPassSRQs";
     public $Title = "Заявка на разовый автопропуск";
 
     public function ExpandFields() {
