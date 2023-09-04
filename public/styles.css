@@ -1,0 +1,16 @@
+
+.Draft, .Draft a {
+    font-style: italic;
+}
+
+.Obsolete, .Obsolete a {
+    color: lightgray;
+}
+
+.Declined, .Declined a {
+    color: darkred;
+}
+
+.Approved, .Approved a {
+    color: darkgreen;
+}

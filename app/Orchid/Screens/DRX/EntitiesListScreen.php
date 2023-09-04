@@ -6,8 +6,12 @@ use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use App\DRX\DRXClient;
+use App\DRX\ExtendedTD;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
+use Carbon\Carbon;
+
+
 
 class EntitiesListScreen extends Screen
 {
@@ -36,7 +40,7 @@ class EntitiesListScreen extends Screen
             ->skip(($p["page"]-1)*$p["per_page"])
             ->expand($this->ExpandFields())
             ->get();
-//        dd($entities);
+        //        dd($entities);
         return [
                 "entities" => $entities,
                 "pagination" => $p
@@ -92,17 +96,29 @@ class EntitiesListScreen extends Screen
      */
     public function layout(): iterable
     {
-//        dd($this->query()["entities"]);
+        //dd($this->query()["entities"]);
+        $LifeCycles = config('srq.LifeCycles');
         return [
             Layout::table("entities", [
-                TD::make("Id", "Id")->render(fn($item)=>$item["Id"]),
-                TD::make("DocumentKind", "Вид заявки")
-                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["DocumentKind"]["Name"]}</a>")
-                    ->sort()->filter(),
-                TD::make("Subject", "Содержание")
-                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Subject"]}</a>")
+                ExtendedTD::make("Id", "№")
+                    ->render(fn($item)=>$item["Id"])
+                    ->cssClass(fn($item)=>$item["LifeCycleState"]),
+                ExtendedTD::make("DocumentKind", "Вид заявки")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["DocumentKind"]["ShortName"]}</a>")
+                    ->cssClass(fn($item)=>$item["LifeCycleState"])
                     ->sort(),
-                TD::make("DocumentDate", "Дата")->render(fn($item)=>$item["DocumentDate"])->sort()
+                ExtendedTD::make("Subject", "Содержание")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Subject"]}</a>")
+                    ->cssClass(fn($item)=>$item["LifeCycleState"])
+                    ->sort(),
+                ExtendedTD::make("DocumentDate", "Дата создания")
+                    ->render(fn($item)=>Carbon::parse($item["DocumentDate"])->format('d/m/y'))
+                    ->cssClass(fn($item)=>$item["LifeCycleState"])
+                    ->sort()->filter(),
+                ExtendedTD::make("LifeCycleState", "Статус")
+                    ->render(fn($item)=>$LifeCycles[$item["LifeCycleState"]])
+                    ->cssClass(fn($item)=>$item["LifeCycleState"])
+                    ->filter(TD::FILTER_SELECT, $LifeCycles)
             ]),
             Layout::view("Pagination", ["pagination" => $this->query("pagination")])
         ];

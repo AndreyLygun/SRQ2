@@ -6,10 +6,9 @@
     "\\app\\Orchid",
     "\\app\\Orchid\\Screens",
     "\\app\\Orchid\\Screens\\DRX",
-    "\\database",
-    "\\database\\migrations",
-    "\\routes"
+    "\\app\\View",
+    "\\config"
   ],
-  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\AbstractSRQScreen.php",
+  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\EntitiesListScreen.php",
   "PreviewInSolutionExplorer": false
 }

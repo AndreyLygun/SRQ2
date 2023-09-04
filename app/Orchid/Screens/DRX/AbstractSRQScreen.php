@@ -38,6 +38,7 @@ class AbstractSRQScreen extends Screen
     public function NewEntity() {
         $entity["ExternalAccount"] = Auth()->user()->DrxAccount;
         $entity["ExternalUser"] = Auth()->user()->name;
+        $entity["LifeCycleState"] = "Draft";
         return $entity;
     }
 
@@ -52,6 +53,7 @@ class AbstractSRQScreen extends Screen
         } else {
             $entity = $this->NewEntity();
         }
+
         return [
                 "entity" => $entity,
         ];
@@ -74,10 +76,26 @@ class AbstractSRQScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [
-            Button::make("Отправить на согласование")->method("Submit"),
-            Button::make("Сохранить")->method("Save"),
-        ];
+        $buttons = [];
+        switch ($this->entity["LifeCycleState"]) {
+            case 'Draft':
+                $buttons[] = Button::make("Отправить на согласование")->method("Submit");
+                $buttons[] = Button::make("Сохранить")->method("Save");
+                break;
+            case 'Active':
+                $buttons[] = Button::make("На рассмотрении")->disabled();
+                break;
+            case 'Obsolete':
+                break;
+            case 'OnReview':
+                break;
+            case 'Prelimenary':
+                break;
+            case 'Declined':
+                break;
+        }
+
+        return $buttons;
     }
 
 
@@ -117,20 +135,11 @@ class AbstractSRQScreen extends Screen
     {
         //dd($this->query()["entity"]);
         return [
-            Layout::columns([
-                Layout::rows([
-                    Input::make("v1")->title("Что-то 1"),
-                    Input::make("v1")->title("Что-то 2"),
-                ])->,
-                Layout::rows([
-                    Input::make("v1")->title("Что-то 3"),
-                    Input::make("v1")->title("Что-то 4"),
-                ])
-            ]),
             Layout::rows([
                 Input::make("entity.Id")->type("hidden"),
+                Label::make("entity.LifeCycleState")->title("Состояние заявки")->horizontal(),
                 Label::make("entity.ExternalAccount.Name")->title("Название компании")->horizontal(),
-                Label::make("entity.ResponsibleName")->title("Автор заявки")->readonly()->horizontal()
+                Label::make("entity.ResponsibleName")->title("Автор заявки")->horizontal()
              ])
         ];
     }

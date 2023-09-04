@@ -21,6 +21,7 @@ class SecuritySRQScreen extends AbstractSRQScreen
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
     public $EntityType = "IServiceRequestsSecuritySRQScreen";
+    public $entity;
 
     public function ExpandFields() {
         return parent::ExpandFields();
@@ -39,10 +40,9 @@ class SecuritySRQScreen extends AbstractSRQScreen
      */
     public function layout(): iterable
     {
-        //dd($this->query());
         $layout = Layout::rows([
-                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal(),
-                Input::make("entity.ResponsiblePhone")->title("Телефон ответственного сотрудника")->horizontal(),
+                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal()->readonly(!in_array($this->entity["LifeCycleState"], ["Draft", "Declined"])),
+                Input::make("entity.ResponsiblePhone")->title("Телефон ответственного сотрудника")->horizontal()->readonly(!in_array($this->entity["LifeCycleState"], ["Draft", "Declined"])),
             ]);
         return array_merge(parent::layout(), [$layout]);
     }
