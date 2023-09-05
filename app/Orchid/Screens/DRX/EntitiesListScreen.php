@@ -22,7 +22,7 @@ class EntitiesListScreen extends Screen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $DRXEntity = "IServiceRequestsSecuritySRQs";
+    public $DRXEntity = "IsrqAbstractRequests";
 
     //Список ссылочных свойств (через запятую), которые должны быть получены в запросе
     public function ExpandFields(): string
@@ -81,12 +81,11 @@ class EntitiesListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            DropDown::make("Создать заявку...")->
-            List([
-                Link::make("...на разовый пропуск")->route("drx.GuestPassSRQDto"),
-                Link::make("...на разовый автопропуск")->route("drx.AutoPassSRQDto")
+            DropDown::make("Создать заявку...")->list([
+                    Link::make("...на разовый пропуск")->route("drx.GuestPassSRQDto"),
+                    Link::make("...на разовый автопропуск")->route("drx.AutoPassSRQDto")
             ])
-         ];
+        ];
     }
 
     /**

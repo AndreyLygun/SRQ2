@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('Name')->comment("Название компании");
             $table->string('DRX_Login')->comment("Логин в DRX")->unique();
             $table->string('DRX_Password')->comment("Пароль в DRX");
-            $table->longText('emails')->comment("Список допустимых e-mail пользователей");
+            $table->longText('emails')->comment("Список допустимых e-mail пользователей")->nullable();
         });
     }
 

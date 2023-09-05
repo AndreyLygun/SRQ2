@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid\Layouts\User;
 
+use App\Models\DrxAccount;
 use Orchid\Platform\Models\User;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
@@ -51,7 +52,7 @@ class UserListLayout extends Table
 
             TD::make('drx_account_id', __('Арендатор'))
                 ->sort()
-                ->render(fn (User $user) => $user->DrxAccount->name),
+                ->render(fn (User $user) => $user->DrxAccount?->Name),
 
             TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)

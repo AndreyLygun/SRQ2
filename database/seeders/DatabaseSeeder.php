@@ -20,7 +20,12 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "AdminCompany"], ["drx_login" => "lygun", "drx_password" => "31185"]);
-        User::where(["name" => "lygun"])->update(["drx_account_id" => $DrxAccount->id]);
+        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "ООО Ромашка"], ["drx_login" => "romashka", "drx_password" => "31185"]);
+        User::where(["name" => "romashka"])->update(["drx_account_id" => $DrxAccount->id]);
+        echo "Cоздана Ромашка";
+        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "ООО Гвоздика"], ["drx_login" => "gvozdika", "drx_password" => "31185"]);
+        User::where(["name" => "gvozdika"])->update(["drx_account_id" => $DrxAccount->id]);
+        echo "Cоздана Гвоздика";
+
     }
 }
