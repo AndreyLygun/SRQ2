@@ -2,13 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\DRX",
     "\\app\\Orchid",
     "\\app\\Orchid\\Screens",
     "\\app\\Orchid\\Screens\\DRX",
-    "\\app\\View",
-    "\\config"
+    "\\app\\View"
   ],
-  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\EntitiesListScreen.php",
+  "SelectedNode": "\\app\\Orchid\\Screens\\DRX\\GuestPassSRQScreen.php",
   "PreviewInSolutionExplorer": false
 }

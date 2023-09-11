@@ -157,7 +157,6 @@ class UserEditScreen extends Screen
                 Rule::unique(User::class, 'email')->ignore($user),
             ],
         ]);
-
         $permissions = collect($request->get('permissions'))
             ->map(fn ($value, $key) => [base64_decode($key) => $value])
             ->collapse()
@@ -166,7 +165,6 @@ class UserEditScreen extends Screen
         $user->when($request->filled('user.password'), function (Builder $builder) use ($request) {
             $builder->getModel()->password = Hash::make($request->input('user.password'));
         });
-
         $user
             ->fill($request->collect('user')->except(['password', 'permissions', 'roles'])->toArray())
             ->fill(['permissions' => $permissions])

@@ -24,10 +24,10 @@ class EntitiesListScreen extends Screen
     // Тип документа в сервисе интеграции, например IOfficialDocuments
     public $DRXEntity = "IsrqAbstractRequests";
 
-    //Список ссылочных свойств (через запятую), которые должны быть получены в запросе
+    //Возвращает список ссылочных свойств (через запятую), которые должны быть получены в запросе
     public function ExpandFields(): string
     {
-        return "DocumentKind,Author";
+        return "Author";
     }
 
     public function query(): iterable
@@ -40,7 +40,7 @@ class EntitiesListScreen extends Screen
             ->skip(($p["page"]-1)*$p["per_page"])
             ->expand($this->ExpandFields())
             ->get();
-        //        dd($entities);
+        // dd($entities);
         return [
                 "entities" => $entities,
                 "pagination" => $p
@@ -102,16 +102,16 @@ class EntitiesListScreen extends Screen
                 ExtendedTD::make("Id", "№")
                     ->render(fn($item)=>$item["Id"])
                     ->cssClass(fn($item)=>$item["LifeCycleState"]),
-                ExtendedTD::make("DocumentKind", "Вид заявки")
-                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["DocumentKind"]["ShortName"]}</a>")
+                ExtendedTD::make("Kind", "Вид заявки")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Kind"]}</a>")
                     ->cssClass(fn($item)=>$item["LifeCycleState"])
                     ->sort(),
-                ExtendedTD::make("Subject", "Содержание")
-                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Subject"]}</a>")
+                ExtendedTD::make("Name", "Содержание")
+                    ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Name"]}</a>")
                     ->cssClass(fn($item)=>$item["LifeCycleState"])
                     ->sort(),
-                ExtendedTD::make("DocumentDate", "Дата создания")
-                    ->render(fn($item)=>Carbon::parse($item["DocumentDate"])->format('d/m/y'))
+                ExtendedTD::make("Created", "Дата создания")
+                    ->render(fn($item)=>Carbon::parse($item["Created"])->format('d/m/y'))
                     ->cssClass(fn($item)=>$item["LifeCycleState"])
                     ->sort()->filter(),
                 ExtendedTD::make("LifeCycleState", "Статус")

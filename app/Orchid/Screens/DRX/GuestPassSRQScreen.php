@@ -21,12 +21,12 @@ class GuestPassSRQScreen extends SecuritySRQScreen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IServiceRequestsGuestPassSRQs";
+    public $EntityType = "IsrqPass4Visitorss";
     public $Title = "Заявка на разовый пропуск";
 
     public function ExpandFields() {
         $ExpandFields = parent::ExpandFields();
-        $ExpandFields[] = "Guests";
+        $ExpandFields[] = "Visitors";
         return $ExpandFields;
     }
 
@@ -38,9 +38,9 @@ class GuestPassSRQScreen extends SecuritySRQScreen
 
     public function Save() {
         $this->entity = \Request()->get('entity');
-        if (isset($this->entity['Guests']))
-            $this->entity['Guests'] = array_values($this->entity['Guests']);
-        $this->DeleteCollectionProperty('Guests');
+        if (isset($this->entity['Visitors']))
+            $this->entity['Visitors'] = array_values($this->entity['Visitors']);
+        $this->DeleteCollectionProperty('Visitors');
         parent::Save();
     }
     /**
@@ -53,8 +53,8 @@ class GuestPassSRQScreen extends SecuritySRQScreen
         //dd($this->query());
         $layout = parent::layout();
         $layout[] = Layout::rows([
-                DateTimer::make("entity.ValidDate")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),
-                Matrix::make("entity.Guests")->columns(['ФИО' => 'Name'])->title("Посетители")->horizontal()
+                DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),
+                Matrix::make("entity.Visitors")->columns(['ФИО' => 'Name'])->title("Посетители")->horizontal()
             ]);
         return $layout;
     }

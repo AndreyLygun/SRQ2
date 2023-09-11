@@ -30,15 +30,17 @@ class AbstractSRQScreen extends Screen
     // Возвращает список полей-ссылок и полей-коллекций, который используются в форме. Нужен, чтобы OData-API вернул значения этих полей
     // Как правило, перекрытый метод в классе-наследнике добавляет свои поля к результату метода из класса-предка
     public function ExpandFields() {
-        return ["ExternalAccount", "DocumentKind"];
+        return [];
     }
 
 
     // Используется для заполнения значений для новых сущностей (значения по-умолчанию).
     public function NewEntity() {
-        $entity["ExternalAccount"] = Auth()->user()->DrxAccount;
-        $entity["ExternalUser"] = Auth()->user()->name;
-        $entity["LifeCycleState"] = "Draft";
+        $entity = [
+            "ExternalAccount" => Auth()->user()->DrxAccount,
+            "ExternalUser" => Auth()->user()->name;
+            "LifeCycleState" -> "Draft"
+        ];
         return $entity;
     }
 
@@ -83,15 +85,18 @@ class AbstractSRQScreen extends Screen
                 $buttons[] = Button::make("Сохранить")->method("Save");
                 break;
             case 'Active':
-                $buttons[] = Button::make("На рассмотрении")->disabled();
+                $buttons[] = Button::make("Одобрено")->disabled();
                 break;
             case 'Obsolete':
+                $buttons[] = Button::make("Устарел")->disabled();
                 break;
             case 'OnReview':
+                $buttons[] = Button::make("На рассмотрении")->disabled();
                 break;
             case 'Prelimenary':
                 break;
             case 'Declined':
+                $buttons[] = Button::make("Отказ")->disabled();
                 break;
         }
 
@@ -100,6 +105,7 @@ class AbstractSRQScreen extends Screen
 
 
     //Полностью удаляет свойство коллекцию экземпляра
+    //Метод нужно вызвать из перекрытого класса Save для свойств-коллекцйи
     public function DeleteCollectionProperty($CollectionName) {
         if (!isset($this->entity['Id'])) return;
         $odata = new DRXClient();
@@ -109,10 +115,13 @@ class AbstractSRQScreen extends Screen
     public function Save() {
         $odata = new DRXClient();
         if ($this->entity['Id'] != null) {
-            $odata->patch("{$this->EntityType}({$this->entity['Id']})", $this->entity);
+            $Id = $this->entity['Id'];
+            unset($this->entity['Id']);
+            $odata->patch("{$this->EntityType}({$Id})", $this->entity);
         } else {
             try {
                 unset($this->entity['Id']);
+                dd($this->entity);
                 $entity = $odata->post("{$this->EntityType}", $this->entity);
             }
             catch(ClientException $e) {
@@ -133,7 +142,6 @@ class AbstractSRQScreen extends Screen
      */
     public function layout(): iterable
     {
-        //dd($this->query()["entity"]);
         return [
             Layout::rows([
                 Input::make("entity.Id")->type("hidden"),
