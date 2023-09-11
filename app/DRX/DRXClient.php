@@ -10,7 +10,8 @@ use Orchid\Filters\Filterable;
 class PostProcessor implements IProcessor {
     public function processSelect(Builder $query, $response)
     {
-        if (gettype($response) == "string") return $response;
+        if (!is_array($response) || count($response)) return [];
+        dd(is_array($response));
         $result = [];
         foreach($response as $item) {
             $entity = $item["properties"];

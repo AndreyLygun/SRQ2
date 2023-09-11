@@ -22,7 +22,7 @@ class EntitiesListScreen extends Screen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $DRXEntity = "IsrqAbstractRequests";
+    public $DRXEntity = "IServiceRequestsBaseSRQs";
 
     //Список ссылочных свойств (через запятую), которые должны быть получены в запросе
     public function ExpandFields(): string
@@ -40,7 +40,6 @@ class EntitiesListScreen extends Screen
             ->skip(($p["page"]-1)*$p["per_page"])
             ->expand($this->ExpandFields())
             ->get();
-        //        dd($entities);
         return [
                 "entities" => $entities,
                 "pagination" => $p
