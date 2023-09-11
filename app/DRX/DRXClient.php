@@ -27,7 +27,6 @@ class PostProcessor implements IProcessor {
 
 class DRXClient extends ODataClient
 {
-
 	public function __construct() {
         $url = env("DIRECTUM_INTEGRATION_URL");
         $login = Auth()->user()->DrxAccount->DRX_Login;

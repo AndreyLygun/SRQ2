@@ -21,12 +21,12 @@ class AutoPassSRQScreen extends SecuritySRQScreen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IServiceRequestsAutoPassSRQs";
+    public $EntityType = "IsrqPass4VisitorCars";
     public $Title = "Заявка на разовый автопропуск";
 
     public function ExpandFields() {
         $ExpandFields = parent::ExpandFields();
-        $ExpandFields[] = "Guests";
+        $ExpandFields[] = "Visitors";
         return $ExpandFields;
     }
 
@@ -38,9 +38,9 @@ class AutoPassSRQScreen extends SecuritySRQScreen
 
     public function Save() {
         $this->entity = \Request()->get('entity');
-        if (isset($this->entity['Guests']))
-            $this->entity['Guests'] = array_values($this->entity['Guests']);
-        $this->DeleteCollectionProperty('Guests');
+        if (isset($this->entity['Visitors']))
+            $this->entity['Visitors'] = array_values($this->entity['Visitors']);
+        $this->DeleteCollectionProperty('Visitors');
         parent::Save();
     }
     /**
@@ -53,10 +53,10 @@ class AutoPassSRQScreen extends SecuritySRQScreen
         //dd($this->query());
         $layout = parent::layout();
         $layout[] = Layout::rows([
-                DateTimer::make("entity.ValidDate")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),
+                DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),
                 Input::make("entity.CarModel")->title("Модель автомобиля")->horizontal(),
-                Input::make("entity.CarNum")->title("Номер автомобиля")->horizontal(),
-                Matrix::make("entity.Guests")->columns(['ФИО' => 'Name'])->title("Посетители")->horizontal()
+                Input::make("entity.CarNumber")->title("Номер автомобиля")->horizontal(),
+                Matrix::make("entity.Visitors")->columns(['ФИО' => 'Name'])->title("Посетители")->horizontal()
             ]);
         return $layout;
     }

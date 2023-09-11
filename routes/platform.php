@@ -40,11 +40,10 @@ use Tabuna\Breadcrumbs\Trail;
 Route::screen("/srq/list", EntitiesListScreen::class)
     ->name('drx.srqlist');
 
-
-Route::screen("/srq/IGuestPassSRQDto/{id?}", GuestPassSRQScreen::class)
+Route::screen("/srq/IPass4VisitorsDto/{id?}", GuestPassSRQScreen::class)
     ->name('drx.GuestPassSRQDto');
 
-Route::screen("/srq/IAutoPassSRQDto/{id?}", AutoPassSRQScreen::class)
+Route::screen("/srq/IPass4VisitorCarDto/{id?}", AutoPassSRQScreen::class)
     ->name('drx.AutoPassSRQDto');
 
 

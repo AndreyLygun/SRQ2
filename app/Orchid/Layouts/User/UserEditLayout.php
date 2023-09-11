@@ -6,7 +6,9 @@ namespace App\Orchid\Layouts\User;
 
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Rows;
+use App\Models\DrxAccount;
 
 class UserEditLayout extends Rows
 {
@@ -17,6 +19,7 @@ class UserEditLayout extends Rows
      */
     public function fields(): array
     {
+//        dd($this->query['user']);
         return [
             Input::make('user.name')
                 ->type('text')
@@ -24,12 +27,14 @@ class UserEditLayout extends Rows
                 ->required()
                 ->title(__('Name'))
                 ->placeholder(__('Name')),
-
             Input::make('user.email')
                 ->type('email')
                 ->required()
                 ->title(__('Email'))
                 ->placeholder(__('Email')),
+            Select::make('user.drx_account_id')
+            ->fromModel(DrxAccount::class, 'name')
+            ->title('Арендатор')
         ];
     }
 }
