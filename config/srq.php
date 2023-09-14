@@ -21,6 +21,7 @@ return [
     ],
 
     'LifeCycles' => [
+        "Active" => "Действующий",
         "Draft" => "Черновик",
         "OnReview" => "На рассмотрении",
         "Declined" => "Отказ",

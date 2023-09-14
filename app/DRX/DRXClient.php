@@ -2,6 +2,7 @@
 namespace App\DRX;
 
 use Illuminate\Database\Eloquent\Collection;
+use Orchid\Screen\Repository;
 use SaintSystems\OData\ODataClient;
 use SaintSystems\OData\Query\Builder;
 use SaintSystems\OData\Query\IProcessor;
@@ -10,9 +11,7 @@ use Orchid\Filters\Filterable;
 class PostProcessor implements IProcessor {
     public function processSelect(Builder $query, $response)
     {
-        if (!is_array($response) || count($response)) return [];
-        dd(is_array($response));
-        $result = [];
+        if (!is_array($response)) return $response;
         foreach($response as $item) {
             $entity = $item["properties"];
             if (isset($entity["@odata.type"])) {
@@ -35,6 +34,7 @@ class DRXClient extends ODataClient
             $request->headers['Authorization'] = 'Basic '.base64_encode($login.':'.$password);
         });
         $this->postProcessor = new PostProcessor();
+//        $this->setEntityReturnType(Repository::class);
     }
 
 }

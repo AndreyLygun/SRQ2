@@ -2,8 +2,11 @@
 
 namespace App\Orchid\Screens\DRX;
 
-use Illuminate\Http\Request;
 use App\DRX\DRXClient;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
@@ -13,7 +16,7 @@ use Orchid\Support\Facades\Toast;
 
 
 
-class AbstractSRQScreen extends Screen
+class BaseSRQScreen extends Screen
 {
     /**
      * Fetch data to be displayed on the screen.
@@ -22,7 +25,7 @@ class AbstractSRQScreen extends Screen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IServiceRequestsAbstractSRQs";
+    public $EntityType = "IServiceRequestsBaseSRQs";
     public $Title = "Заявка";
     public $entity;
 
@@ -30,16 +33,20 @@ class AbstractSRQScreen extends Screen
     // Возвращает список полей-ссылок и полей-коллекций, который используются в форме. Нужен, чтобы OData-API вернул значения этих полей
     // Как правило, перекрытый метод в классе-наследнике добавляет свои поля к результату метода из класса-предка
     public function ExpandFields() {
-        return [];
+        return ["Author", "DocumentKind", "Renter"];
     }
 
 
     // Используется для заполнения значений для новых сущностей (значения по-умолчанию).
     public function NewEntity() {
         $entity = [
-            "ExternalAccount" => Auth()->user()->DrxAccount,
-            "ExternalUser" => Auth()->user()->name;
-            "LifeCycleState" -> "Draft"
+//            "Author" => Auth()->user()->DrxAccount,
+            "Renter" => [
+                "Id" => Auth()->user()->DrxAccount["Id"],
+                "Name" => Auth()->user()->DrxAccount["Name"]
+            ],
+            "Creator" => Auth()->user()->name,
+            "LifeCycleState" => "Draft"
         ];
         return $entity;
     }
@@ -114,21 +121,16 @@ class AbstractSRQScreen extends Screen
 
     public function Save() {
         $odata = new DRXClient();
-        if ($this->entity['Id'] != null) {
-            $Id = $this->entity['Id'];
-            unset($this->entity['Id']);
+        $Id = $this->entity['Id']??null;
+        unset($this->entity['Id']);
+        if ($Id) {
             $odata->patch("{$this->EntityType}({$Id})", $this->entity);
         } else {
-            try {
-                unset($this->entity['Id']);
-                dd($this->entity);
-                $entity = $odata->post("{$this->EntityType}", $this->entity);
-            }
-            catch(ClientException $e) {
-                dd($e);
-            }
+            $entity = $odata->post("{$this->EntityType}", $this->entity)[0];
+            $Id = $entity["Id"];
         }
-        Toast::info('Что-то сохранилось');
+        Toast::info('Заявка сохранена');
+        return route(Request::route()->getName()) . "/" . $Id;
     }
 
     public function Submit() {
@@ -145,8 +147,8 @@ class AbstractSRQScreen extends Screen
         return [
             Layout::rows([
                 Input::make("entity.Id")->type("hidden"),
-                Label::make("entity.LifeCycleState")->title("Состояние заявки")->horizontal(),
-                Label::make("entity.ExternalAccount.Name")->title("Название компании")->horizontal(),
+                Label::make("entity.RequestState")->title("Состояние заявки")->horizontal(),
+                Label::make("entity.Renter.Name")->title("Название компании")->horizontal(),
                 Label::make("entity.ResponsibleName")->title("Автор заявки")->horizontal()
              ])
         ];

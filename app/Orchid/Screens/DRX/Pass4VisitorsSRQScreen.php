@@ -12,7 +12,7 @@ use Orchid\Support\Facades\Toast;
 
 
 
-class GuestPassSRQScreen extends SecuritySRQScreen
+class Pass4VisitorsSRQScreen extends SecuritySRQScreen
 {
     /**
      * Fetch data to be displayed on the screen.
@@ -21,7 +21,7 @@ class GuestPassSRQScreen extends SecuritySRQScreen
      */
 
     // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IsrqPass4Visitorss";
+    public $EntityType = "IServiceRequestsPass4Visitors";
     public $Title = "Заявка на разовый пропуск";
 
     public function ExpandFields() {

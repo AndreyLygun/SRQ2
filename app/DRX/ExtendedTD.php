@@ -18,6 +18,7 @@ class ExtendedTD extends TD {
 
     public function buildTd($repository, ?object $loop = null)
     {
+
         $value = $this->render ? $this->handler($repository, $loop) : $repository->getContent($this->name);
         return view('orchid.td', [
             'align'   => $this->align,

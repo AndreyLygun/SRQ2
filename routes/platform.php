@@ -16,8 +16,8 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\DRX\EntitiesListScreen;
-use App\Orchid\Screens\DRX\GuestPassSRQScreen;
-use App\Orchid\Screens\DRX\AutoPassSRQScreen;
+use App\Orchid\Screens\DRX\Pass4VisitorsSRQScreen;
+use App\Orchid\Screens\DRX\Pass4VisitorCarSRQScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 
 use Illuminate\Support\Facades\Route;
@@ -40,14 +40,14 @@ use Tabuna\Breadcrumbs\Trail;
 Route::screen("/srq/list", EntitiesListScreen::class)
     ->name('drx.srqlist');
 
-Route::screen("/srq/IPass4VisitorsDto/{id?}", GuestPassSRQScreen::class)
+Route::screen("/srq/IPass4VisitorDto/{id?}", Pass4VisitorsSRQScreen::class)
     ->name('drx.GuestPassSRQDto');
 
-Route::screen("/srq/IPass4VisitorCarDto/{id?}", AutoPassSRQScreen::class)
+Route::screen("/srq/IPass4VisitorCarDto/{id?}", Pass4VisitorCarSRQScreen::class)
     ->name('drx.AutoPassSRQDto');
 
 
-Route::screen('/main', PlatformScreen::class)
+Route::screen('/main', EntitiesListScreen::class)
     ->name('platform.main');
 
 // Platform > Profile

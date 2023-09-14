@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 
 
-class SecuritySRQScreen extends AbstractSRQScreen
+class SecuritySRQScreen extends BaseSRQScreen
 {
     /**
      * Fetch data to be displayed on the screen.
@@ -30,6 +30,7 @@ class SecuritySRQScreen extends AbstractSRQScreen
     public function NewEntity() {
         $entity = parent::NewEntity();
         $entity["ResponsibleName"] = Auth()->user()->name;
+        $entity["ValidTo"] = $entity["ValidFrom"] = $entity["ValidOn"] = Carbon::tomorrow();
         return $entity;
     }
 
