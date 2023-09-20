@@ -10,7 +10,6 @@ use App\Orchid\Screens\Examples\ExampleFieldsScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
-use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
@@ -18,6 +17,7 @@ use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\DRX\EntitiesListScreen;
 use App\Orchid\Screens\DRX\Pass4VisitorsSRQScreen;
 use App\Orchid\Screens\DRX\Pass4VisitorCarSRQScreen;
+use App\Orchid\Screens\DRX\Pass4AssetsMovingSRQScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 
 use Illuminate\Support\Facades\Route;
@@ -45,6 +45,11 @@ Route::screen("/srq/IPass4VisitorDto/{id?}", Pass4VisitorsSRQScreen::class)
 
 Route::screen("/srq/IPass4VisitorCarDto/{id?}", Pass4VisitorCarSRQScreen::class)
     ->name('drx.AutoPassSRQDto');
+
+Route::screen("/srq/IPass4AssetsMovingDto/{id?}", Pass4AssetsMovingSRQScreen::class)
+    ->name('drx.Pass4AssetsMovingSRQDto');
+
+
 
 
 Route::screen('/main', EntitiesListScreen::class)

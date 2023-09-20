@@ -3,10 +3,7 @@
 namespace App\Orchid\Screens\DRX;
 
 use App\DRX\DRXClient;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Route;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
@@ -24,29 +21,29 @@ class BaseSRQScreen extends Screen
      * @return array
      */
 
-    // Тип документа в сервисе интеграции, например IOfficialDocuments
-    public $EntityType = "IServiceRequestsBaseSRQs";
-    public $Title = "Заявка";
-    public $entity;
 
+    public $EntityType = "IServiceRequestsBaseSRQs";     // Имя сущности в сервисе интеграции, например IOfficialDocuments
+    public $CollectionFields = [];                      // Список полей-коллекций, которые нужно пересоздавать заново при каждом сохранении
+    public $Title = "Заявка";
+    protected  $exFields = ["Car2", "Car3"];
+
+    public $entity;
 
     // Возвращает список полей-ссылок и полей-коллекций, который используются в форме. Нужен, чтобы OData-API вернул значения этих полей
     // Как правило, перекрытый метод в классе-наследнике добавляет свои поля к результату метода из класса-предка
     public function ExpandFields() {
-        return ["Author", "DocumentKind", "Renter"];
+        $ExpandFields = ["Author", "DocumentKind", "Renter"];
+        return $ExpandFields;
     }
+
 
 
     // Используется для заполнения значений для новых сущностей (значения по-умолчанию).
     public function NewEntity() {
         $entity = [
-//            "Author" => Auth()->user()->DrxAccount,
-            "Renter" => [
-                "Id" => Auth()->user()->DrxAccount["Id"],
-                "Name" => Auth()->user()->DrxAccount["Name"]
-            ],
+            "Renter" => ['Name' => Auth()->user()->DrxAccount->Name],
             "Creator" => Auth()->user()->name,
-            "LifeCycleState" => "Draft"
+            "RequestState" => "Draft"
         ];
         return $entity;
     }
@@ -62,10 +59,7 @@ class BaseSRQScreen extends Screen
         } else {
             $entity = $this->NewEntity();
         }
-
-        return [
-                "entity" => $entity,
-        ];
+        return ["entity" => $entity];
     }
 
     /**
@@ -85,10 +79,12 @@ class BaseSRQScreen extends Screen
      */
     public function commandBar(): iterable
     {
+
         $buttons = [];
-        switch ($this->entity["LifeCycleState"]) {
+        switch ($this->entity["RequestState"]) {
             case 'Draft':
-                $buttons[] = Button::make("Отправить на согласование")->method("Submit");
+                if (isset($this->entity["Id"]))
+                    $buttons[] = Button::make("Отправить на согласование")->method("Submit");
                 $buttons[] = Button::make("Сохранить")->method("Save");
                 break;
             case 'Active':
@@ -120,21 +116,37 @@ class BaseSRQScreen extends Screen
     }
 
     public function Save() {
+//        $this->entity["Name"] = '-';
         $odata = new DRXClient();
-        $Id = $this->entity['Id']??null;
-        unset($this->entity['Id']);
+        $entity = request()->get('entity');
+        $entityType = $this->EntityType;
+        $Id = $entity['Id']??null;
+        unset($entity['Id']);
+
+        // Обрабатываем поля-коллекции из списка $this->CollectionFields
+        foreach($this->CollectionFields as $cf) {
+            if (isset($entity[$cf])) {
+                // ..исправлям баг или фичу, по которой поле Matrix начинает нумерацию строк с единицы
+                $entity[$cf] = array_values($entity[$cf]);
+                // ..потом очищаем поле на сервере DRX, чтоб заполнить его новыми значениями
+                if ($Id) $odata->delete("{$entityType}({$Id})/$cf");
+            }
+        }
         if ($Id) {
-            $odata->patch("{$this->EntityType}({$Id})", $this->entity);
+            // Обновляем запись
+            $odata->patch("{$entityType}({$Id})", $entity);
         } else {
-            $entity = $odata->post("{$this->EntityType}", $this->entity)[0];
+            // Создаём запись
+            $entity = $odata->post("{$entityType}", $entity)[0];
             $Id = $entity["Id"];
         }
-        Toast::info('Заявка сохранена');
-        return route(Request::route()->getName()) . "/" . $Id;
+        Toast::info("Успешно сохранено");
+        return redirect(route(Request::route()->getName()) . "/" . $Id);
     }
 
     public function Submit() {
-        Toast::info("Заглушка отправки на согласование.");
+        $this->entity['RequestState'] = 'OnReview';
+        $this->Save();
     }
 
     /**

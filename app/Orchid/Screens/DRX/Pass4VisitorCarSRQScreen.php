@@ -6,9 +6,6 @@ use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Fields\DateTimer;
-use Orchid\Screen\Actions\Button;
-use Carbon\Carbon;
-use Orchid\Support\Facades\Toast;
 
 
 
@@ -23,31 +20,15 @@ class Pass4VisitorCarSRQScreen extends SecuritySRQScreen
     // Тип документа в сервисе интеграции, например IOfficialDocuments
     public $EntityType = "IServiceRequestsPass4VisitorCars";
     public $Title = "Заявка на разовый автопропуск";
+    public $CollectionFields = ["Visitors"];
+    protected $exFields = ["Car2", "Car3"];
 
     public function ExpandFields() {
-        $ExpandFields = parent::ExpandFields();
-        $ExpandFields[] = "Visitors";
-        return $ExpandFields;
+        $ExpandFields = ["Visitors"];
+        return array_merge(parent::ExpandFields(), $ExpandFields);
     }
 
-    public function NewEntity() {
-        $entity = parent::NewEntity();
-        $entity["ValidDate"] = Carbon::tomorrow()->toDateString();
-        return $entity;
-    }
-
-    public function Save() {
-        $this->entity = \Request()->get('entity');
-        if (isset($this->entity['Visitors']))
-            $this->entity['Visitors'] = array_values($this->entity['Visitors']);
-        $this->DeleteCollectionProperty('Visitors');
-        parent::Save();
-    }
-    /**
-     * The screen's layout elements.
-     *
-     * @return \Orchid\Screen\Layout[]|string[]
-     */
+    // Описывает макет экрана
     public function layout(): iterable
     {
         //dd($this->query());

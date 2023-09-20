@@ -2,7 +2,6 @@
 
 namespace App\Orchid\Screens\DRX;
 
-use Orchid\Screen\Repository;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
@@ -55,8 +54,8 @@ class EntitiesListScreen extends Screen
         $pagination["per_page"] = request("per_page")??$perPage;
         $pagination["page"] = $page;
         $pagination["last_page"] = (int)ceil($total / $pagination["per_page"]);
-        $pagination["first_page_url"] = http_build_query(array_merge(\request()->all(), ["page" => 1]));
-        $pagination["last_page_url"] = http_build_query(array_merge(\request()->all(), ["page" => $pagination["last_page"]]));
+        $pagination["first_page_url"] = http_build_query(array_merge(request()->all(), ["page" => 1]));
+        $pagination["last_page_url"] = http_build_query(array_merge(request()->all(), ["page" => $pagination["last_page"]]));
         $pagination["prev_page_url"] = $page>0?http_build_query(array_merge(request()->all(), ["page" => $page-1])):"";
         $pagination["next_page_url"] = $page<$total?http_build_query(array_merge(request()->all(), ["page" => $page+1])):"";
         return $pagination;
@@ -83,7 +82,8 @@ class EntitiesListScreen extends Screen
         return [
             DropDown::make("Создать заявку...")->list([
                     Link::make("...на разовый пропуск")->route("drx.GuestPassSRQDto"),
-                    Link::make("...на разовый автопропуск")->route("drx.AutoPassSRQDto")
+                    Link::make("...на разовый автопропуск")->route("drx.AutoPassSRQDto"),
+                    Link::make("...на перемещение ТМЦ")->route("drx.Pass4AssetsMovingSRQDto")
             ])
         ];
     }

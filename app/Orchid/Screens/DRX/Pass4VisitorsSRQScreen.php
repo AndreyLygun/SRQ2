@@ -3,13 +3,8 @@
 namespace App\Orchid\Screens\DRX;
 
 use Orchid\Support\Facades\Layout;
-use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Fields\DateTimer;
-use Orchid\Screen\Actions\Button;
-use Carbon\Carbon;
-use Orchid\Support\Facades\Toast;
-
 
 
 class Pass4VisitorsSRQScreen extends SecuritySRQScreen
@@ -23,6 +18,7 @@ class Pass4VisitorsSRQScreen extends SecuritySRQScreen
     // Тип документа в сервисе интеграции, например IOfficialDocuments
     public $EntityType = "IServiceRequestsPass4Visitors";
     public $Title = "Заявка на разовый пропуск";
+    public $CollectionFields = ['Visitors'];
 
     public function ExpandFields() {
         $ExpandFields = parent::ExpandFields();
@@ -30,27 +26,8 @@ class Pass4VisitorsSRQScreen extends SecuritySRQScreen
         return $ExpandFields;
     }
 
-    public function NewEntity() {
-        $entity = parent::NewEntity();
-        $entity["ValidDate"] = Carbon::tomorrow()->toDateString();
-        return $entity;
-    }
-
-    public function Save() {
-        $this->entity = \Request()->get('entity');
-        if (isset($this->entity['Visitors']))
-            $this->entity['Visitors'] = array_values($this->entity['Visitors']);
-        $this->DeleteCollectionProperty('Visitors');
-        parent::Save();
-    }
-    /**
-     * The screen's layout elements.
-     *
-     * @return \Orchid\Screen\Layout[]|string[]
-     */
     public function layout(): iterable
     {
-        //dd($this->query());
         $layout = parent::layout();
         $layout[] = Layout::rows([
                 DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),

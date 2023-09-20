@@ -4,9 +4,6 @@ namespace App\Orchid\Screens\DRX;
 
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Matrix;
-use Orchid\Screen\Fields\DateTimer;
-use Orchid\Screen\Actions\Button;
 use Carbon\Carbon;
 
 
@@ -41,9 +38,10 @@ class SecuritySRQScreen extends BaseSRQScreen
      */
     public function layout(): iterable
     {
+        $requestState = $this->entity["RequestState"];
         $layout = Layout::rows([
-                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal()->readonly(!in_array($this->entity["LifeCycleState"], ["Draft", "Declined"])),
-                Input::make("entity.ResponsiblePhone")->title("Телефон ответственного сотрудника")->horizontal()->readonly(!in_array($this->entity["LifeCycleState"], ["Draft", "Declined"])),
+                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal()->readonly(!in_array($requestState, ["Draft", "Declined"])),
+                Input::make("entity.ResponsiblePhone")->title("Телефон сотрудника")->horizontal()->readonly(!in_array($requestState, ["Draft", "Declined"])),
             ]);
         return array_merge(parent::layout(), [$layout]);
     }
