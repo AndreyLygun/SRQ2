@@ -11,7 +11,9 @@ use Orchid\Filters\Filterable;
 class PostProcessor implements IProcessor {
     public function processSelect(Builder $query, $response)
     {
+
         if (!is_array($response)) return $response;
+        $result = [];
         foreach($response as $item) {
             $entity = $item["properties"];
             if (isset($entity["@odata.type"])) {
@@ -25,6 +27,7 @@ class PostProcessor implements IProcessor {
 }
 
 class DRXClient extends ODataClient
+
 {
 	public function __construct() {
         $url = env("DIRECTUM_INTEGRATION_URL");
@@ -34,9 +37,7 @@ class DRXClient extends ODataClient
             $request->headers['Authorization'] = 'Basic '.base64_encode($login.':'.$password);
         });
         $this->postProcessor = new PostProcessor();
-//        $this->setEntityReturnType(Repository::class);
     }
-
 }
 
 ?>

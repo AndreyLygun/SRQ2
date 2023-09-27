@@ -21,7 +21,6 @@ class Pass4VisitorCarSRQScreen extends SecuritySRQScreen
     public $EntityType = "IServiceRequestsPass4VisitorCars";
     public $Title = "Заявка на разовый автопропуск";
     public $CollectionFields = ["Visitors"];
-    protected $exFields = ["Car2", "Car3"];
 
     public function ExpandFields() {
         $ExpandFields = ["Visitors"];
@@ -31,7 +30,6 @@ class Pass4VisitorCarSRQScreen extends SecuritySRQScreen
     // Описывает макет экрана
     public function layout(): iterable
     {
-        //dd($this->query());
         $layout = parent::layout();
         $layout[] = Layout::rows([
                 DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),

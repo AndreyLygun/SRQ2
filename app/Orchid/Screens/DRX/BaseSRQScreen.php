@@ -4,12 +4,15 @@ namespace App\Orchid\Screens\DRX;
 
 use App\DRX\DRXClient;
 use Illuminate\Support\Facades\Request;
+use Orchid\Screen\Layouts\Listener;
+use Orchid\Screen\Repository;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
+
 
 
 
@@ -21,13 +24,11 @@ class BaseSRQScreen extends Screen
      * @return array
      */
 
-
     public $EntityType = "IServiceRequestsBaseSRQs";     // Имя сущности в сервисе интеграции, например IOfficialDocuments
     public $CollectionFields = [];                      // Список полей-коллекций, которые нужно пересоздавать заново при каждом сохранении
     public $Title = "Заявка";
-    protected  $exFields = ["Car2", "Car3"];
-
     public $entity;
+
 
     // Возвращает список полей-ссылок и полей-коллекций, который используются в форме. Нужен, чтобы OData-API вернул значения этих полей
     // Как правило, перекрытый метод в классе-наследнике добавляет свои поля к результату метода из класса-предка
@@ -35,7 +36,6 @@ class BaseSRQScreen extends Screen
         $ExpandFields = ["Author", "DocumentKind", "Renter"];
         return $ExpandFields;
     }
-
 
 
     // Используется для заполнения значений для новых сущностей (значения по-умолчанию).
@@ -53,12 +53,13 @@ class BaseSRQScreen extends Screen
         if ($id) {
             $odata = new DRXClient();
             $query = $odata->from($this->EntityType);
-            if ($this->ExpandFields())
-                $query = $query->expand($this->ExpandFields());
+            if ($expandFields = $this->ExpandFields())
+                $query = $query->expand($expandFields);
             $entity = $query->find((int)$id);
         } else {
             $entity = $this->NewEntity();
         }
+
         return ["entity" => $entity];
     }
 
@@ -81,6 +82,7 @@ class BaseSRQScreen extends Screen
     {
 
         $buttons = [];
+        $buttons[] = Button::make("Копировать");
         switch ($this->entity["RequestState"]) {
             case 'Draft':
                 if (isset($this->entity["Id"]))
@@ -107,46 +109,60 @@ class BaseSRQScreen extends Screen
     }
 
 
-    //Полностью удаляет свойство коллекцию экземпляра
-    //Метод нужно вызвать из перекрытого класса Save для свойств-коллекцйи
-    public function DeleteCollectionProperty($CollectionName) {
-        if (!isset($this->entity['Id'])) return;
+    /**
+     * @return mixed|object
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function SaveEntity() {
         $odata = new DRXClient();
-        $odata->delete("{$this->EntityType}({$this->entity['Id']})/$CollectionName");
-    }
-
-    public function Save() {
-//        $this->entity["Name"] = '-';
-        $odata = new DRXClient();
-        $entity = request()->get('entity');
+        $entity = $this->entity;
         $entityType = $this->EntityType;
-        $Id = $entity['Id']??null;
+        $Id = (int) $entity['Id']??null;
         unset($entity['Id']);
 
+        // обрабатываем странное поведение контрола Orchid Select, который возвращает строку вместо целого числа\
+        // у нас такая хрень мешает в полях-ссылках (в терминах DRX), которые здесь выглядят как Select::make('entity.somefield.Id')
+        // TODO нужно попытаться исправить это в коде контрола
+        foreach ($entity as $key => $field) {
+            if (isset($field['Id'])) {
+                $entity[$key]['Id'] = (int) $field['Id'];
+            }
+        }
         // Обрабатываем поля-коллекции из списка $this->CollectionFields
         foreach($this->CollectionFields as $cf) {
             if (isset($entity[$cf])) {
-                // ..исправлям баг или фичу, по которой поле Matrix начинает нумерацию строк с единицы
+                // ..исправлям баг|фичу, из-за которой поле Matrix начинает нумерацию строк с единицы
                 $entity[$cf] = array_values($entity[$cf]);
                 // ..потом очищаем поле на сервере DRX, чтоб заполнить его новыми значениями
                 if ($Id) $odata->delete("{$entityType}({$Id})/$cf");
             }
         }
+        //dd(json_encode($entity));
         if ($Id) {
             // Обновляем запись
-            $odata->patch("{$entityType}({$Id})", $entity);
+            $entity = ($odata->from($entityType)->expand($this->ExpandFields())->whereKey($Id)->patch($entity))[0];
         } else {
             // Создаём запись
-            $entity = $odata->post("{$entityType}", $entity)[0];
-            $Id = $entity["Id"];
+            $entity = ($odata->from($entityType)->expand($this->ExpandFields())->post($entity))[0];
         }
+        return $entity;
+    }
+
+    public function Save() {
+        $this->entity = request()->get('entity');
+        $this->entity = $this->SaveEntity();
+        $Id = $this->entity['Id'];
         Toast::info("Успешно сохранено");
         return redirect(route(Request::route()->getName()) . "/" . $Id);
     }
 
     public function Submit() {
+        $this->entity = request()->get('entity');
         $this->entity['RequestState'] = 'OnReview';
-        $this->Save();
+        $this->SaveEntity();
+        Toast::info("Заявка сохранена и отправлена на согласование");
+        return redirect(route('drx.srqlist'));
     }
 
     /**

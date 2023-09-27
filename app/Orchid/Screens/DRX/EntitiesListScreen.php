@@ -30,15 +30,28 @@ class EntitiesListScreen extends Screen
         return "Author,DocumentKind";
     }
 
+    // выбираем из строки запроса параметр sort и преваращаем его в параметры для order
+    protected function OrderBy() {
+        $order_field = request()->get('sort', 'Created');
+        $order_dir = 'Asc';
+        if ($order_field[0] == '-') {
+            $order_field = substr($order_field, 1);
+            $order_dir = 'Desc';
+        }
+        $order_field = str_replace('.', '/', $order_field);
+        return [$order_field, $order_dir];
+    }
+
     public function query(): iterable
     {
         $odata = new DRXClient();
         $total = $odata->from($this->DRXEntity)->count();
-        $p = $this->pagination($total);
+        $p = $this->pagination($total, 1000);
         $entities = $odata->from($this->DRXEntity)
-            ->take($p["per_page"])
-            ->skip(($p["page"]-1)*$p["per_page"])
+            ->take($p['per_page'] * $p['page'])
+            ->skip($p['per_page'] * ($p['page']-1))
             ->expand($this->ExpandFields())
+            ->order($this->OrderBy())
             ->get();
         return [
                 "entities" =>  $entities,
@@ -95,7 +108,7 @@ class EntitiesListScreen extends Screen
      */
     public function layout(): iterable
     {
-
+//dd($this->query("pagination"));
         $LifeCycles = config('srq.LifeCycles');
         return [
             Layout::table("entities", [
@@ -103,7 +116,7 @@ class EntitiesListScreen extends Screen
                     ->render(fn($item)=>$item["Id"])
                     ->cssClass(fn($item)=>$item["RequestState"])
                 ->width("60"),
-                ExtendedTD::make("DocumentKind", "Вид заявки")
+                ExtendedTD::make("DocumentKind.Name", "Вид заявки")
                     ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["DocumentKind"]["Name"]}</a>")
                     ->cssClass(fn($item)=>$item["RequestState"])
                     ->sort(),
@@ -111,16 +124,15 @@ class EntitiesListScreen extends Screen
                     ->render(fn($item)=>"<a href='/srq/{$item["@odata.type"]}/{$item["Id"]}'>{$item["Subject"]}</a>")
                     ->cssClass(fn($item)=>$item["RequestState"])
                     ->sort()->width("50%"),
-                ExtendedTD::make("Created", "Дата создания")
+                ExtendedTD::make("Created", "Cоздан")
                     ->render(fn($item)=>Carbon::parse($item["Created"])->format('d/m/y'))
                     ->cssClass(fn($item)=>$item["RequestState"])
-                    ->sort()->filter(),
+                    ->sort(),
                 ExtendedTD::make("RequestState", "Статус")
-                    ->render(fn($item)=>$item["RequestState"])
-                    ->cssClass(fn($item)=>$item["RequestState"])
-                    ->filter(TD::FILTER_SELECT, $LifeCycles)
-            ]),
-            Layout::view("Pagination", ["pagination" => $this->query("pagination")])
+                    ->render(fn($item)=>config('srq.RequestState')[$item["RequestState"]])
+                    ->cssClass(fn($item)=>$item["RequestState"])->sort()
+            ])->title(_("Welcome")),
+            //Layout::view("Pagination", ["pagination" => $this->query("pagination")])
         ];
     }
 }
