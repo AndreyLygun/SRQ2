@@ -131,7 +131,7 @@ class EntitiesListScreen extends Screen
                 ExtendedTD::make("RequestState", "Статус")
                     ->render(fn($item)=>config('srq.RequestState')[$item["RequestState"]])
                     ->cssClass(fn($item)=>$item["RequestState"])->sort()
-            ])->title(__("auth.failed")),
+            ]),
             //Layout::view("Pagination", ["pagination" => $this->query("pagination")])
         ];
     }
