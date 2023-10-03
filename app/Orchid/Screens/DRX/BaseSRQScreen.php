@@ -120,7 +120,7 @@ class BaseSRQScreen extends Screen
         $entityType = $this->EntityType;
         $Id = (int) $entity['Id']??null;
         unset($entity['Id']);
-
+//dd($entity);
         // обрабатываем странное поведение контрола Orchid Select, который возвращает строку вместо целого числа\
         // у нас такая хрень мешает в полях-ссылках (в терминах DRX), которые здесь выглядят как Select::make('entity.somefield.Id')
         // TODO нужно попытаться исправить это в коде контрола
@@ -139,11 +139,9 @@ class BaseSRQScreen extends Screen
             }
         }
         //dd(json_encode($entity));
-        if ($Id) {
-            // Обновляем запись
+        if ($Id) {            // Обновляем запись
             $entity = ($odata->from($entityType)->expand($this->ExpandFields())->whereKey($Id)->patch($entity))[0];
-        } else {
-            // Создаём запись
+        } else {            // Создаём запись
             $entity = ($odata->from($entityType)->expand($this->ExpandFields())->post($entity))[0];
         }
         return $entity;
