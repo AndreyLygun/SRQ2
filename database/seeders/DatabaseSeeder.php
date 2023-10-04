@@ -12,20 +12,32 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
+
+    protected function createDrxAccount($name, $drx_login, $password = '31185') {
+        $DrxAccount = DrxAccount::FirstOrCreate(['name' => $name], ['drx_login' => $drx_login, 'drx_password' => $password]);
+        User::where('email',  'like', "%$drx_login%")->update(['drx_account_id' => $DrxAccount->id]);
+        echo "$name created\n";
+    }
+
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "ООО Ромашка"], ["drx_login" => "romashka", "drx_password" => "31185"]);
-        User::where(["name" => "romashka"])->update(["drx_account_id" => $DrxAccount->id]);
-        echo "Cоздана Ромашка";
-        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "ООО Гвоздика"], ["drx_login" => "gvozdika", "drx_password" => "31185"]);
-        User::where(["name" => "gvozdika"])->update(["drx_account_id" => $DrxAccount->id]);
-        echo "Cоздана Гвоздика";
+        $this->createDrxAccount("Ricoh Rus", "ricoh");
+        $this->createDrxAccount("УК Sawatzky", "sawatzky");
+        $this->createDrxAccount("БЦ Прео-8", "preo8");
+        $this->createDrxAccount("Saint-Gobain", "sgcp");
+//
+//
+//        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "УК Sawatzky"], ["drx_login" => "sawatzky", "drx_password" => "31185"]);
+//        User::where(["name" => "gvozdika"])->update(["drx_account_id" => $DrxAccount->id]);
+//        echo "УК Sawatzky\n";
+//
+//        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "БЦ Прео-8"], ["drx_login" => "preo8", "drx_password" => "31185"]);
+//        User::where(["name" => ""])->update(["drx_account_id" => $DrxAccount->id]);
+//        echo "Преo8\n";
+//
+//        $DrxAccount = DrxAccount::FirstOrCreate(["name" => "Saint-Gobain"], ["drx_login" => "sgcp", "drx_password" => "31185"]);
+//        User::where(["name" => ""])->update(["drx_account_id" => $DrxAccount->id]);
+//        echo "Преo8\n";
 
     }
 }
