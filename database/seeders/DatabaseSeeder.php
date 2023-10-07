@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->createDrxAccount("Ricoh Rus", "ricoh");
         $this->createDrxAccount("УК Sawatzky", "sawatzky");
-        $this->createDrxAccount("БЦ Прео-8", "preo8");
+        $this->createDrxAccount("БЦ Прео8", "preo8");
         $this->createDrxAccount("Saint-Gobain", "sgcp");
 //
 //

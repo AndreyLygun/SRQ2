@@ -4,8 +4,6 @@ namespace App\Orchid\Screens\DRX;
 
 use App\DRX\DRXClient;
 use Illuminate\Support\Facades\Request;
-use Orchid\Screen\Layouts\Listener;
-use Orchid\Screen\Repository;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
@@ -52,14 +50,10 @@ class BaseSRQScreen extends Screen
     {
         if ($id) {
             $odata = new DRXClient();
-            $query = $odata->from($this->EntityType);
-            if ($expandFields = $this->ExpandFields())
-                $query = $query->expand($expandFields);
-            $entity = $query->find((int)$id);
+            $entity = $odata->getEnitity($this->EntityType, $id, $this->ExpandFields());
         } else {
             $entity = $this->NewEntity();
         }
-
         return ["entity" => $entity];
     }
 
@@ -114,45 +108,20 @@ class BaseSRQScreen extends Screen
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
+
+    //TODO: исправить сохранение инициатора заявки: сейчас сохраняется арендатор вместо сотрудника
     public function SaveEntity() {
+        $this->entity['Creator'] = Auth()->user()->name;
         $odata = new DRXClient();
-        $entity = $this->entity;
-        $entityType = $this->EntityType;
-        $Id = (int) $entity['Id']??null;
-        unset($entity['Id']);
-//dd($entity);
-        // обрабатываем странное поведение контрола Orchid Select, который возвращает строку вместо целого числа\
-        // у нас такая хрень мешает в полях-ссылках (в терминах DRX), которые здесь выглядят как Select::make('entity.somefield.Id')
-        // TODO нужно попытаться исправить это в коде контрола
-        foreach ($entity as $key => $field) {
-            if (isset($field['Id'])) {
-                $entity[$key]['Id'] = (int) $field['Id'];
-            }
-        }
-        // Обрабатываем поля-коллекции из списка $this->CollectionFields
-        foreach($this->CollectionFields as $cf) {
-            if (isset($entity[$cf])) {
-                // ..исправлям баг|фичу, из-за которой поле Matrix начинает нумерацию строк с единицы
-                $entity[$cf] = array_values($entity[$cf]);
-                // ..потом очищаем поле на сервере DRX, чтоб заполнить его новыми значениями
-                if ($Id) $odata->delete("{$entityType}({$Id})/$cf");
-            }
-        }
-        //dd(json_encode($entity));
-        if ($Id) {            // Обновляем запись
-            $entity = ($odata->from($entityType)->expand($this->ExpandFields())->whereKey($Id)->patch($entity))[0];
-        } else {            // Создаём запись
-            $entity = ($odata->from($entityType)->expand($this->ExpandFields())->post($entity))[0];
-        }
+        $entity = $odata->saveEnitity($this->EntityType, $this->entity, $this->ExpandFields(), $this->CollectionFields);
         return $entity;
     }
 
     public function Save() {
         $this->entity = request()->get('entity');
         $this->entity = $this->SaveEntity();
-        $Id = $this->entity['Id'];
         Toast::info("Успешно сохранено");
-        return redirect(route(Request::route()->getName()) . "/" . $Id);
+        return redirect(route(Request::route()->getName()) . "/" . $this->entity['Id']);
     }
 
     public function Submit() {
@@ -173,9 +142,9 @@ class BaseSRQScreen extends Screen
         return [
             Layout::rows([
                 Input::make("entity.Id")->type("hidden"),
-                Label::make("entity.RequestState")->title("Состояние заявки")->horizontal(),
+                Label::make("entity.RequestState")-> title("Состояние заявки")->horizontal(),
                 Label::make("entity.Renter.Name")->title("Название компании")->horizontal(),
-                Label::make("entity.ResponsibleName")->title("Автор заявки")->horizontal()
+                Label::make("entity.Creator")->title("Автор заявки")->horizontal()
              ])
         ];
     }

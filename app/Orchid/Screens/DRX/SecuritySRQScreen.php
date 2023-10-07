@@ -38,10 +38,10 @@ class SecuritySRQScreen extends BaseSRQScreen
      */
     public function layout(): iterable
     {
-        $requestState = $this->entity["RequestState"];
+        $readOnly = !in_array($this->entity["RequestState"], ["Draft", "Declined"]);
         $layout = Layout::rows([
-                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal()->readonly(!in_array($requestState, ["Draft", "Declined"])),
-                Input::make("entity.ResponsiblePhone")->title("Телефон сотрудника")->horizontal()->readonly(!in_array($requestState, ["Draft", "Declined"])),
+                Input::make("entity.ResponsibleName")->title("Ответственный сотрудник")->horizontal()->readonly($readOnly),
+                Input::make("entity.ResponsiblePhone")->title("Телефон сотрудника")->horizontal()->readonly($readOnly)->mask('+7 (999) 999-99-99'),
             ]);
         return array_merge(parent::layout(), [$layout]);
     }
