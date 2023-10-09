@@ -45,7 +45,6 @@ class Pass4AssetsMovingSRQScreen extends SecuritySRQScreen
                 return $carry;
             }
         );
-//        dd($result);
         return $result;
     }
 

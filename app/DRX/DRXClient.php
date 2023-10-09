@@ -44,11 +44,15 @@ class DRXClient extends ODataClient
     }
 
     public function getEnitity($EntityType, int $Id, $ExpandFields) {
-        $query = $this->from($EntityType);
-        if ($ExpandFields)
-            $query = $query->expand($ExpandFields);
-        $entity = $query->find($Id);
-        return $entity;
+        try {
+            $query = $this->from($EntityType);
+            if ($ExpandFields)
+                $query = $query->expand($ExpandFields);
+            $entity = $query->find($Id);
+            return $entity;
+        } catch (GuzzleHttp\Exception\ClientException $ex) {
+            dd($ex);
+        }
     }
 
     public function saveEnitity($EntityType, $Entity, $ExpandFields, $CollectionFields) {

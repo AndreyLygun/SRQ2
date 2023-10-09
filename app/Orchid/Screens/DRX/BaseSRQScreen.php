@@ -76,7 +76,7 @@ class BaseSRQScreen extends Screen
     {
 
         $buttons = [];
-        $buttons[] = Button::make("Копировать");
+//        $buttons[] = Button::make("Копировать");
         switch ($this->entity["RequestState"]) {
             case 'Draft':
                 if (isset($this->entity["Id"]))
