@@ -24,8 +24,9 @@ class BaseSRQScreen extends Screen
 
     public $EntityType = "IServiceRequestsBaseSRQs";     // Имя сущности в сервисе интеграции, например IOfficialDocuments
     public $CollectionFields = [];                      // Список полей-коллекций, которые нужно пересоздавать заново при каждом сохранении
-    public $Title = "Заявка";
+    public $Title = '';
     public $entity;
+
 
 
     // Возвращает список полей-ссылок и полей-коллекций, который используются в форме. Нужен, чтобы OData-API вернул значения этих полей
@@ -50,7 +51,7 @@ class BaseSRQScreen extends Screen
     {
         if ($id) {
             $odata = new DRXClient();
-            $entity = $odata->getEnitity($this->EntityType, $id, $this->ExpandFields());
+            $entity = $odata->getEntity($this->EntityType, $id, $this->ExpandFields());
         } else {
             $entity = $this->NewEntity();
         }
@@ -64,7 +65,10 @@ class BaseSRQScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->Title;
+        if (isset($this->entity['Id']))
+            return $this->entity['DocumentKind']['Name']  . ' (' . $this->entity['Id'] . ')';
+        else
+            return $this->Title  . ' (новая)' ;
     }
 
     /**
@@ -79,8 +83,10 @@ class BaseSRQScreen extends Screen
 //        $buttons[] = Button::make("Копировать");
         switch ($this->entity["RequestState"]) {
             case 'Draft':
-                if (isset($this->entity["Id"]))
+                if (isset($this->entity["Id"])) {
+//                    $buttons[] = Button::make("Удалить")->method("Delete")->confirm('Удалить заявку?');
                     $buttons[] = Button::make("Отправить на согласование")->method("Submit");
+                }
                 $buttons[] = Button::make("Сохранить")->method("Save");
                 break;
             case 'Active':
@@ -113,7 +119,7 @@ class BaseSRQScreen extends Screen
     public function SaveEntity() {
         $this->entity['Creator'] = Auth()->user()->name;
         $odata = new DRXClient();
-        $entity = $odata->saveEnitity($this->EntityType, $this->entity, $this->ExpandFields(), $this->CollectionFields);
+        $entity = $odata->saveEntity($this->EntityType, $this->entity, $this->ExpandFields(), $this->CollectionFields);
         return $entity;
     }
 
@@ -129,6 +135,13 @@ class BaseSRQScreen extends Screen
         $this->entity['RequestState'] = 'OnReview';
         $this->SaveEntity();
         Toast::info("Заявка сохранена и отправлена на согласование");
+        return redirect(route('drx.srqlist'));
+    }
+
+    public function Delete() {
+        $odata = new DRXClient();
+        $odata->deleteEntity($this->EntityType, request('entity.Id'));
+        Toast::info("Заявка удалена");
         return redirect(route('drx.srqlist'));
     }
 

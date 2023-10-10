@@ -43,7 +43,7 @@ class DRXClient extends ODataClient
         $this->postProcessor = new PostProcessor();
     }
 
-    public function getEnitity($EntityType, int $Id, $ExpandFields) {
+    public function getEntity($EntityType, int $Id, $ExpandFields) {
         try {
             $query = $this->from($EntityType);
             if ($ExpandFields)
@@ -55,7 +55,7 @@ class DRXClient extends ODataClient
         }
     }
 
-    public function saveEnitity($EntityType, $Entity, $ExpandFields, $CollectionFields) {
+    public function saveEntity($EntityType, $Entity, $ExpandFields, $CollectionFields) {
         $Id = (int) $Entity['Id']??null;
         unset($Entity['Id']);
         // обрабатываем странное поведение контрола Orchid Select, который возвращает строку вместо целого числа\
@@ -75,13 +75,17 @@ class DRXClient extends ODataClient
                 if ($Id) $this->delete("{$EntityType}({$Id})/$cf");
             }
         }
-        //dd(json_encode($entity));
+        // dd($Entity);
         if ($Id) {            // Обновляем запись
             $Entity = ($this->from($EntityType)->expand($ExpandFields)->whereKey($Id)->patch($Entity))[0];
         } else {            // Создаём запись
             $Entity = ($this->from($EntityType)->expand($ExpandFields)->post($Entity))[0];
         }
         return $Entity;
+    }
+
+    public function deleteEntity($DRXEntity, int $Id) {
+	    $this->from($DRXEntity)->whereKey($Id)->delete();
     }
 
     public function getList($DRXEntity, $ExpandFields, $perPage = 1000) {
