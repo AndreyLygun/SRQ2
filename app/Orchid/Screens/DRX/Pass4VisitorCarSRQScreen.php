@@ -32,7 +32,7 @@ class Pass4VisitorCarSRQScreen extends SecuritySRQScreen
     {
         $layout = parent::layout();
         $layout[] = Layout::rows([
-                DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d'),
+                DateTimer::make("entity.ValidOn")->title("Дата посещения")->horizontal()->enableTime(false)->format('Y-m-d\Z'),
                 Input::make("entity.CarModel")->title("Модель автомобиля")->horizontal(),
                 Input::make("entity.CarNumber")->title("Номер автомобиля")->horizontal(),
                 Matrix::make("entity.Visitors")->columns(['ФИО' => 'Name'])->title("Посетители")->horizontal()
