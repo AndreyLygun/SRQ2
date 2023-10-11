@@ -118,6 +118,7 @@ class BaseSRQScreen extends Screen
     //TODO: исправить сохранение инициатора заявки: сейчас сохраняется арендатор вместо сотрудника
     public function SaveEntity() {
         $this->entity['Creator'] = Auth()->user()->name;
+        $this->entity['CreatorMail'] = Auth()->user()->email;
         $odata = new DRXClient();
         $entity = $odata->saveEntity($this->EntityType, $this->entity, $this->ExpandFields(), $this->CollectionFields);
         return $entity;
@@ -157,7 +158,7 @@ class BaseSRQScreen extends Screen
                 Input::make("entity.Id")->type("hidden"),
                 Label::make("entity.RequestState")-> title("Состояние заявки")->horizontal(),
                 Label::make("entity.Renter.Name")->title("Название компании")->horizontal(),
-                Label::make("entity.Creator")->title("Автор заявки")->horizontal()
+                Label::make("entity.Creator")->title("Автор заявки")->horizontal(),
              ])
         ];
     }

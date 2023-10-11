@@ -55,21 +55,37 @@ class Pass4AssetsMovingSRQScreen extends SecuritySRQScreen
         $layout[] = Layout::rows([
             Select::make('entity.MovingDirection')
                 ->title('Направление перемещения')
-                ->options(config('srq.MovingDirection'))
-                ->horizontal()->required()->empty('')->disabled($readonly),
-            DateTimer::make('entity.ValidOn')->title("Дата перемещения")
-                ->horizontal()->enableTime(false)->format('Y-m-d\Z')->disabled($readonly)->required(),
-            Select::make('entity.Site.Id')->title('Место разгрузки')
-                ->options($this->Sites)->horizontal()->empty('')->required()->help('Указать при оформлении ввоза-вывоза')->disabled($readonly),
-            Select::make('entity.TimeSpan.Id')->title('Время ввоза-вывоза')
-                ->options($this->TimeSpans)->horizontal()->required()->required()->disabled($readonly),
+                ->options(config('srq.MovingDirection'))->empty('')
+                ->required()
+                ->horizontal()
+                ->disabled($readonly),
+            DateTimer::make('entity.ValidOn')
+                ->title("Дата перемещения")
+                ->format('Y-m-d\Z')
+                ->required()
+                ->horizontal()
+                ->enableTime(false)
+                ->disabled($readonly),
+            Select::make('entity.Site.Id')
+                ->title('Место разгрузки')
+                ->options($this->Sites)
+                ->required()
+                ->horizontal()
+                ->empty('')
+                ->disabled($readonly),
+            Select::make('entity.TimeSpan.Id')
+                ->title('Время ввоза-вывоза')
+                ->options($this->TimeSpans)->empty('')
+                ->horizontal()
+                ->required()
+                ->disabled($readonly),
             ExtendedMatrix::make('entity.Inventory')->columns(['Описание' => 'Name', 'Количество' => 'Quantity'])->title("Описание ТМЦ")
                 ->horizontal()->readonly($readonly)
         ])->title('Сведения о перемещении');
 
         $layout[] = Layout::rows([
             Input::make('entity.CarModel')->title('Модель автомобиля')->horizontal(),
-            Input::make('entity.CarNumber')->title('Номер автомобиля')->horizontal()->help('Обязательно указать при оформлении ввоза/вывоза'),
+            Input::make('entity.CarNumber')->title('Номер автомобиля')->horizontal(),
             Matrix::make('entity.Loaders')->columns(['ФИО' => 'Name'])->title('Персонал')->horizontal(),
         ])->title('Сведения о перевозчике');
         return $layout;

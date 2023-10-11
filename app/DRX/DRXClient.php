@@ -106,7 +106,7 @@ class DRXClient extends ODataClient
 
     // выбираем из строки запроса параметр sort и преваращаем его в параметры для order
     protected function OrderBy() {
-        $order_field = request()->get('sort', 'Created');
+        $order_field = request()->get('sort', '-Created');
         $order_dir = 'Asc';
         if ($order_field[0] == '-') {
             $order_field = substr($order_field, 1);
